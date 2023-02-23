@@ -44,6 +44,7 @@ export function NewOrder() {
       Alert.alert("Error", "Não foi possível abrir o chamado");
     } finally {
       setIsLoading(false);
+      handleBack()
     }
 
   }

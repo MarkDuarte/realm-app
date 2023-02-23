@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Alert, FlatList } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native'
 
 import { Load } from '../Load';
 import { Filters } from '../Filters';
@@ -18,8 +19,13 @@ export function Orders() {
     const realm = await getRealm();
 
     try {
-      const response = realm.objects("Order");
-      console.log(response);
+      const response = realm
+      .objects("Order")
+      .filtered(`status = '${status}'`)
+      .sorted("created_at")
+      .toJSON()
+
+      setOrders(response)
     } catch {
       Alert.alert("Error", "Não foi possível carregar os chamados.");
     } finally {
@@ -28,9 +34,9 @@ export function Orders() {
     }
   }
 
-  useEffect(() => {
+  useFocusEffect( useCallback(() => {
     fetchOrders();
-  }, [])
+  }, [status]))
 
   return (
     <Container>
