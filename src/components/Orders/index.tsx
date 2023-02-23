@@ -34,6 +34,42 @@ export function Orders() {
     }
   }
 
+  async function OrderUpdate(id: string) {
+    const realm = await getRealm()
+
+    try {
+      const orderSelected = realm
+      .objects<OrderProps>("Order")
+      .filtered(`_id = '${id}'`)[0]
+
+      realm.write(() => {
+        orderSelected.status = orderSelected.status === "open" ? "closed" : "open"
+      })
+
+      Alert.alert("Chamado", "Chamado atualizado!")
+      fetchOrders()
+    } catch {
+      Alert.alert("Chamado", "Não foi possível atualizar o chamado!")
+    }
+  }
+
+  async function handleOrderUpdate(id: string) {
+    Alert.alert(
+      "Chamado",
+      "Encerrar o chamado!",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        {
+          text: "Confirmar",
+          onPress: () => OrderUpdate(id)
+        }
+      ]
+    )
+  }
+
   useFocusEffect( useCallback(() => {
     fetchOrders();
   }, [status]))
@@ -54,7 +90,7 @@ export function Orders() {
             data={orders}
             keyExtractor={item => item._id}
             renderItem={({ item }) => (
-              <Order data={item} />
+              <Order data={item} onPress={() => handleOrderUpdate(item._id)} />
             )}
             contentContainerStyle={{ paddingBottom: 100 }}
             showsVerticalScrollIndicator={false}

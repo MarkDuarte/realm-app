@@ -22,6 +22,7 @@ export type OrderProps = OrderStyleProps & {
   patrimony: string;
   equipment: string;
   description: string;
+  status: string;
   created_at: Date;
 }
 
